@@ -6,7 +6,7 @@ Free static attendance tracker for GitHub Pages.
 1. In repository Settings, open **Pages**.
 2. Under Build and deployment, select **Deploy from a branch**.
 3. Select branch **main** and folder **/(root)**, then Save.
-4. Wait for deployment. Site URL: https://technglobal123-hue.github.io/classping/
+4. Wait for deployment. Site URL: https://aaaryannn0905.github.io/classping/
 
 ## Notes
 - Add classes and mark attendance in the app.
