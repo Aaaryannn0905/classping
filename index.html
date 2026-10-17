@@ -53,5 +53,24 @@ let notified=new Set();function checkReminders(){if(!("Notification"in window)||
  localStorage.setItem(KEY,JSON.stringify(data));localStorage.setItem(flag,"1");if(added>0)console.info("ClassPing added "+added+" corrected D1 timetable classes.");
 })();
 
+
+const FULL_SUBJECT_NAMES={
+"MA222":"Applied Mathematics-3 (MA222)",
+"CH224":"Fluid Flow & Mechanical Operations (CH224)",
+"ECE102":"Fundamentals of Electronics Engineering (ECE102)",
+"CH262":"Chemical Engineering Thermodynamics (CH262)",
+"CH171":"Mass & Energy Balances (CH171)",
+"CH224L":"Fluid Flow & Mechanical Operations Lab (CH224L)",
+"CH224 TUT (D1)":"Fluid Flow & Mechanical Operations Tutorial — D1 (CH224)",
+"ECE102 TUT (D1)":"Fundamentals of Electronics Engineering Tutorial — D1 (ECE102)",
+"MA222 TUT (D1)":"Applied Mathematics-3 Tutorial — D1 (MA222)",
+"CH171 TUT (D1+D2+D3)":"Mass & Energy Balances Tutorial — all batches (CH171)",
+"CH262 TUT (D1)":"Chemical Engineering Thermodynamics Tutorial — D1 (CH262)",
+"ECE102L (D1)":"Fundamentals of Electronics Engineering Lab — D1 (ECE102L)"
+};
+let subjectNamesChanged=false;
+for(const item of data.classes){if(FULL_SUBJECT_NAMES[item.subject]){item.subject=FULL_SUBJECT_NAMES[item.subject];subjectNamesChanged=true}}
+if(subjectNamesChanged)localStorage.setItem(KEY,JSON.stringify(data));
+
 if("serviceWorker"in navigator)navigator.serviceWorker.register("./sw.js").catch(()=>{});render();setInterval(checkReminders,15000);
 </script></body></html>
