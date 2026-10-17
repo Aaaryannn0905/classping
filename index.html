@@ -36,41 +36,21 @@ $("enable").onclick=async()=>{if(!("Notification"in window)){alert("Notification
 let notified=new Set();function checkReminders(){if(!("Notification"in window)||Notification.permission!=="granted")return;let now=new Date(),day=DAYS[now.getDay()],mins=now.getHours()*60+now.getMinutes();for(let c of data.classes){if(c.day!==day)continue;let [h,m]=c.start.split(":").map(Number),target=h*60+m-c.lead,key=c.id+"_"+now.toDateString();if(mins===target&&!notified.has(key)){notified.add(key);let title="Class starting: "+c.subject,body="Starts at "+c.start+(c.room?" • "+c.room:"");if(navigator.serviceWorker?.controller)navigator.serviceWorker.ready.then(r=>r.showNotification(title,{body,icon:"./icon-192.png"})).catch(()=>new Notification(title,{body}));else new Notification(title,{body})}}}
 
 
-// Default timetable: RGIPT Chemical Engineering, batch D1.
-// Imported once per browser profile; existing user classes are preserved and duplicates are skipped.
+// Corrected from the user's timetable image: RGIPT Chemical Engineering, D1.
 (function importD1TimetableOnce(){
- const flag="classping-rgipt-d1-imported-v1";
+ const flag="classping-rgipt-d1-imported-v2";
  if(localStorage.getItem(flag))return;
+ data.classes=data.classes.filter(c=>!(c.day==="Wednesday"&&c.subject==="CH224L"&&c.room==="AB1 GF"));
  const rows=[
- ["Monday","MA222","10:00","10:55","AB2 LR6",10],
- ["Monday","CH224","11:00","11:55","AB2 LR6",10],
- ["Monday","ECE102","12:00","12:55","AB2 LR6",10],
- ["Monday","CH224 TUT (D1)","15:00","15:55","AB2 LR6",10],
- ["Monday","CH224L","16:00","17:55","AB1 GF",10],
- ["Tuesday","CH262","09:00","09:55","AB2 LR6",10],
- ["Tuesday","CH224","10:00","10:55","AB2 LR6",10],
- ["Tuesday","CH171","11:00","11:55","AB2 LR6",10],
- ["Tuesday","ECE102 TUT (D1)","16:00","16:55","AB2 LR6",10],
- ["Tuesday","MA222 TUT (D1)","17:00","17:55","AB2 LR6",10],
- ["Wednesday","CH262","09:00","09:55","AB2 LR6",10],
- ["Wednesday","MA222","10:00","10:55","AB2 LR6",10],
- ["Wednesday","ECE102","11:00","11:55","AB2 LR6",10],
- ["Wednesday","CH171 TUT (D1+D2+D3)","12:00","12:55","AB2 LR6",10],
- ["Thursday","CH262","09:00","09:55","AB2 LR6",10],
- ["Thursday","CH224","10:00","10:55","AB2 LR6",10],
- ["Thursday","CH171","11:00","11:55","AB2 LR6",10],
- ["Thursday","CH224L","14:00","15:55","AB1 GF",10],
- ["Thursday","ECE102L (D1)","16:00","16:55","Plaza 4th Floor",10],
- ["Friday","CH262 TUT (D1)","09:00","09:55","AB2 LR6",10],
- ["Friday","MA222","10:00","10:55","AB2 LR6",10],
- ["Friday","ECE102","11:00","11:55","AB2 LR6",10],
- ["Friday","CH224L","16:00","17:55","AB1 GF",10]
+ ["Monday","MA222","10:00","10:55","AB2 LR6"],["Monday","CH224","11:00","11:55","AB2 LR6"],["Monday","ECE102","12:00","12:55","AB2 LR6"],["Monday","CH224 TUT (D1)","15:00","15:55","AB2 LR6"],["Monday","CH224L","16:00","17:55","AB1 GF"],
+ ["Tuesday","CH262","09:00","09:55","AB2 LR6"],["Tuesday","CH224","10:00","10:55","AB2 LR6"],["Tuesday","CH171","11:00","11:55","AB2 LR6"],["Tuesday","ECE102 TUT (D1)","16:00","16:55","AB2 LR6"],["Tuesday","MA222 TUT (D1)","17:00","17:55","AB2 LR6"],
+ ["Wednesday","CH262","09:00","09:55","AB2 LR6"],["Wednesday","MA222","10:00","10:55","AB2 LR6"],["Wednesday","ECE102","11:00","11:55","AB2 LR6"],["Wednesday","CH171 TUT (D1+D2+D3)","12:00","12:55","AB2 LR6"],
+ ["Thursday","CH262","09:00","09:55","AB2 LR6"],["Thursday","CH224","10:00","10:55","AB2 LR6"],["Thursday","CH171","11:00","11:55","AB2 LR6"],["Thursday","CH224L","14:00","15:55","AB1 GF"],["Thursday","ECE102L (D1)","16:00","16:55","Plaza 4th Floor"],
+ ["Friday","CH262 TUT (D1)","09:00","09:55","AB2 LR6"],["Friday","MA222","10:00","10:55","AB2 LR6"],["Friday","ECE102","11:00","11:55","AB2 LR6"],["Friday","CH224L","16:00","17:55","AB1 GF"]
  ];
- const keys=new Set(data.classes.map(x=>x.day+"|"+x.subject+"|"+x.start));
- let added=0;
- for(const r of rows){const key=r[0]+"|"+r[1]+"|"+r[2];if(keys.has(key))continue;data.classes.push({id:crypto.randomUUID?crypto.randomUUID():String(Date.now()+Math.random()),day:r[0],subject:r[1],start:r[2],end:r[3],room:r[4],lead:r[5]});keys.add(key);added++}
- localStorage.setItem(KEY,JSON.stringify(data));localStorage.setItem(flag,"1");
- if(added>0)console.info("ClassPing imported "+added+" default D1 timetable classes.");
+ const keys=new Set(data.classes.map(x=>x.day+"|"+x.subject+"|"+x.start));let added=0;
+ for(const r of rows){const key=r[0]+"|"+r[1]+"|"+r[2];if(keys.has(key))continue;data.classes.push({id:crypto.randomUUID?crypto.randomUUID():String(Date.now()+Math.random()),day:r[0],subject:r[1],start:r[2],end:r[3],room:r[4],lead:10});keys.add(key);added++}
+ localStorage.setItem(KEY,JSON.stringify(data));localStorage.setItem(flag,"1");if(added>0)console.info("ClassPing added "+added+" corrected D1 timetable classes.");
 })();
 
 if("serviceWorker"in navigator)navigator.serviceWorker.register("./sw.js").catch(()=>{});render();setInterval(checkReminders,15000);
