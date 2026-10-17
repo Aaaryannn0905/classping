@@ -7,17 +7,17 @@
 </main><script>
 const KEY="classping-v1";const $=id=>document.getElementById(id);const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const common=[
-["Monday","MA222","10:00","10:55","AB2 LR6","Lecture"],["Monday","CH224","11:00","11:55","AB2 LR6","Lecture"],["Monday","ECE102","12:00","12:55","AB2 LR6","Lecture"],["Monday","CH224L","16:00","17:55","AB1 GF","Lab"],
+["Monday","MA222","10:00","10:55","AB2 LR6","Lecture"],["Monday","CH224","11:00","11:55","AB2 LR6","Lecture"],["Monday","ECE102","12:00","12:55","AB2 LR6","Lecture"],["Monday","CH224L","17:00","17:55","AB1 GF","Lab"],
 ["Tuesday","CH262","09:00","09:55","AB2 LR6","Lecture"],["Tuesday","CH224","10:00","10:55","AB2 LR6","Lecture"],["Tuesday","CH171","11:00","11:55","AB2 LR6","Lecture"],
-["Wednesday","CH262","09:00","09:55","AB2 LR6","Lecture"],["Wednesday","MA222","10:00","10:55","AB2 LR6","Lecture"],["Wednesday","ECE102","11:00","11:55","AB2 LR6","Lecture"],["Wednesday","CH171 TUT (all batches)","12:00","12:55","AB2 LR6","Tutorial"],
+["Wednesday","CH262","09:00","09:55","AB2 LR6","Lecture"],["Wednesday","MA222","10:00","10:55","AB2 LR6","Lecture"],["Wednesday","ECE102","11:00","11:55","AB2 LR6","Lecture"],["Wednesday","CH171 TUT (D1+D2+D3)","12:00","12:55","AB2 LR6","Tutorial"],
 ["Thursday","CH262","09:00","09:55","AB2 LR6","Lecture"],["Thursday","CH224","10:00","10:55","AB2 LR6","Lecture"],["Thursday","CH171","11:00","11:55","AB2 LR6","Lecture"],["Thursday","CH224L","14:00","15:55","AB1 GF","Lab"],
-["Friday","CH262","09:00","09:55","AB2 LR6","Lecture"],["Friday","MA222","10:00","10:55","AB2 LR6","Lecture"],["Friday","ECE102","11:00","11:55","AB2 LR6","Lecture"],["Friday","CH224L","16:00","17:55","AB1 GF","Lab"]
-];
+["Friday","MA222","10:00","10:55","AB2 LR6","Lecture"],["Friday","ECE102","11:00","11:55","AB2 LR6","Lecture"],["Friday","CH224L","16:00","17:55","AB1 GF","Lab"]
+
 const byBatch={
-D1:[["Monday","CH224 TUT","15:00","15:55","AB2 LR6","Tutorial"],["Tuesday","ECE102 TUT (D1)","16:00","16:55","AB2 LR6","Tutorial"],["Tuesday","MA222 TUT (D1)","17:00","17:55","AB2 LR6","Tutorial"],["Friday","CH262 TUT (D1)","09:00","09:55","AB2 LR6","Tutorial"],["Thursday","ECE102L (D1)","16:00","16:55","Plaza 4th Floor","Lab"],["Monday","ECE102 TUT (D1)","16:00","16:55","AB2 LR6","Tutorial"]],
-D2:[["Tuesday","ECE102 TUT (D2+D3)","16:00","16:55","AB2 LR5","Tutorial"],["Wednesday","ECE102L (D2+D3)","14:00","14:55","Plaza 4th Floor","Lab"],["Thursday","MA222 TUT (D2)","17:00","17:55","AB2 LR5","Tutorial"],["Friday","CH262 TUT (D2+D3)","14:00","14:55","AB2 LR6","Tutorial"],["Friday","CH262 TUT (D2+D3)","15:00","15:55","AB2 LR6","Tutorial"]],
-D3:[["Tuesday","ECE102 TUT (D2+D3)","16:00","16:55","AB2 LR5","Tutorial"],["Wednesday","ECE102L (D2+D3)","14:00","14:55","Plaza 4th Floor","Lab"],["Friday","CH262 TUT (D2+D3)","14:00","14:55","AB2 LR6","Tutorial"],["Friday","CH262 TUT (D2+D3)","15:00","15:55","AB2 LR6","Tutorial"]]
-};
+D1:[["Monday","CH224 TUT (D1)","15:00","15:55","AB2 LR6","Tutorial"],["Tuesday","ECE102 TUT (D1)","16:00","16:55","AB2 LR6","Tutorial"],["Tuesday","MA222 TUT (D1)","17:00","17:55","AB2 LR6","Tutorial"],["Thursday","ECE102L (D1)","16:00","16:55","Plaza 4th Floor","Lab"],["Friday","CH262 TUT (D1)","09:00","09:55","AB2 LR6","Tutorial"]],
+D2:[["Tuesday","ECE102 TUT (D2+D3)","16:00","16:55","AB2 LR5","Tutorial"],["Wednesday","ECE102L (D2+D3)","14:00","15:55","Plaza 4th Floor","Lab"],["Thursday","MA222 TUT (D2)","17:00","17:55","AB2 LR5","Tutorial"],["Friday","CH262 TUT (D2+D3) (KGB)","14:00","14:55","AB2 LR6","Tutorial"],["Friday","CH262 TUT (D2+D3) (MK)","15:00","15:55","AB2 LR6","Tutorial"]],
+D3:[["Tuesday","ECE102 TUT (D2+D3)","16:00","16:55","AB2 LR5","Tutorial"],["Wednesday","ECE102L (D2+D3)","14:00","15:55","Plaza 4th Floor","Lab"],["Friday","CH262 TUT (D2+D3) (KGB)","14:00","14:55","AB2 LR6","Tutorial"],["Friday","CH262 TUT (D2+D3) (MK)","15:00","15:55","AB2 LR6","Tutorial"]]
+
 let draft=[];
 function makeDraft(){let batch=$("batch").value;draft=[...common,...byBatch[batch]].map((x,i)=>({id:"rgipt-"+batch+"-"+i,day:x[0],subject:x[1],start:x[2],end:x[3],room:x[4],kind:x[5],lead:10}));let days=["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];draft.sort((a,b)=>days.indexOf(a.day)-days.indexOf(b.day)||a.start.localeCompare(b.start));$("previewArea").innerHTML="<p><b>Batch "+batch+" — "+draft.length+" classes</b></p>"+draft.map(c=>'<div class="entry"><div><b>'+esc(c.subject)+'</b><small>'+esc(c.day)+' • '+c.start+'–'+c.end+' • '+esc(c.room)+' • '+esc(c.kind)+'</small></div><span class="tag">'+batch+'</span></div>').join("");$("actions").style.display="flex"}
 $("preview").onclick=makeDraft;$("back").onclick=()=>location.href="./";$("cancel").onclick=()=>{$("previewArea").innerHTML="Preview cancelled. Nothing was imported.";$("actions").style.display="none";draft=[]};
